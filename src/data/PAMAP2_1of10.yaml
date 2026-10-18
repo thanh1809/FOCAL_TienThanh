@@ -128,11 +128,44 @@ SW_Transformer:
                 time_augmenters: ["no"]
                 freq_augmenters: ["no"]
 
+# DINOv3 vision backbone adapted for PAMAP2 time-frequency sensor tensors.
+# Set DINOV3_PRETRAINED=1 in the training environment when official DINOv3
+# pretrained weights are available there. Keeping this false makes local and
+# Render inference work offline with the trained project checkpoint.
+DINOv3:
+        model_name: "vit_small_patch16_dinov3"
+        pretrained: False
+        freeze_backbone: False
+        input_size: 224
+        dropout_ratio: 0.2
+        loc_out_channels: 128
+        fc_dim: 128
+        pretrained_head: "linear"
+        optimizer:
+                name: "AdamW"
+                start_lr: 0.0001
+                warmup_lr: 0.000001
+                min_lr: 0.0000001
+                clip_grad: 5.0
+                weight_decay: 0.05
+        lr_scheduler:
+                name: "cosine"
+                warmup_prefix: True
+                warmup_epochs: 5
+                train_epochs: 200
+                start_epoch: 0
+                decay_epochs: 100
+                decay_rate: 0.2
+        fixed_augmenters:
+                time_augmenters: ["no"]
+                freq_augmenters: ["no"]
+
 FOCAL:
         emb_dim: 128
         temperature:
                 SW_Transformer: 0.07
                 DeepSense: 0.5
+                DINOv3: 0.07
         ranking_margin: 0.0
         inter_rank_margin: 1
         intra_rank_margin: 0.05

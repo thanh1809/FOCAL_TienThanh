@@ -5,7 +5,7 @@ numpy
 scipy
 pyyaml
 einops
-timm
+timm>=1.0.20
 fastapi
 uvicorn
 python-multipart

@@ -15,6 +15,7 @@ if SRC_DIR not in sys.path:
 from input_utils.yaml_utils import load_yaml
 from models.DeepSense import DeepSense
 from models.SW_Transformer import SW_Transformer
+from models.DINOv3 import DINOv3
 
 ACTIVITY_CLASSES = [
     {"id": 0, "name": "lying", "vi": "Nằm nghỉ ngơi", "icon": "🛌", "category": "Nghỉ ngơi"},
@@ -41,12 +42,12 @@ class FOCALInferenceEngine:
     def __init__(self, config_path="src/data/PAMAP2_1of10.yaml", weights_dir="weights"):
         self.config_path = config_path
         self.weights_dir = weights_dir
-        self.default_weight_filename = "PAMAP2_1of10_DeepSense_finetune_best.pt"
+        self.default_weight_filename = "PAMAP2_1of10_DINOv3_activity_classification_1.0_finetune_best.pt"
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.config = self._load_config()
         self.model = None
         self.active_weight_file = None
-        self.model_type = "DeepSense" # PAMAP2 trained backbone
+        self.model_type = "DINOv3" # PAMAP2 trained backbone
         self.is_real_model = False
         
         # Try to load real weights if available
@@ -68,7 +69,7 @@ class FOCALInferenceEngine:
         files = glob.glob(os.path.join(self.weights_dir, "*.pt"))
         return [os.path.basename(f) for f in files]
 
-    def _create_args_obj(self, model_name="DeepSense"):
+    def _create_args_obj(self, model_name="DINOv3"):
         class Args:
             pass
         args = Args()
@@ -91,9 +92,9 @@ class FOCALInferenceEngine:
             target_weight = os.path.join(self.weights_dir, weight_filename)
         elif self.default_weight_filename in weights:
             target_weight = os.path.join(self.weights_dir, self.default_weight_filename)
-        elif "best_model.pt" in weights:
+        elif self.model_type != "DINOv3" and "best_model.pt" in weights:
             target_weight = os.path.join(self.weights_dir, "best_model.pt")
-        elif len(weights) > 0:
+        elif self.model_type != "DINOv3" and len(weights) > 0:
             target_weight = os.path.join(self.weights_dir, weights[0])
 
         if model_name:
@@ -104,6 +105,8 @@ class FOCALInferenceEngine:
         try:
             if self.model_type == "SW_Transformer":
                 self.model = SW_Transformer(args).to(self.device)
+            elif self.model_type == "DINOv3":
+                self.model = DINOv3(args).to(self.device)
             else:
                 self.model = DeepSense(args).to(self.device)
             
@@ -115,10 +118,14 @@ class FOCALInferenceEngine:
                     # Filter keys
                     model_dict = self.model.state_dict()
                     filtered_dict = {k: v for k, v in state_dict.items() if k in model_dict and v.shape == model_dict[k].shape}
-                    model_dict.update(filtered_dict)
-                    self.model.load_state_dict(model_dict)
-                self.is_real_model = True
-                self.active_weight_file = os.path.basename(target_weight)
+                    if filtered_dict:
+                        model_dict.update(filtered_dict)
+                        self.model.load_state_dict(model_dict)
+                        self.is_real_model = True
+                        self.active_weight_file = os.path.basename(target_weight)
+                    else:
+                        self.is_real_model = False
+                        self.active_weight_file = None
             else:
                 self.is_real_model = False
                 self.active_weight_file = None

@@ -3,6 +3,7 @@ import torch.nn as nn
 # FOCAL Backbone models
 from models.DeepSense import DeepSense
 from models.SW_Transformer import SW_Transformer
+from models.DINOv3 import DINOv3
 
 # FOCAL Frameworks
 from models.FOCALModules import FOCAL
@@ -17,6 +18,8 @@ def init_backbone_model(args):
         classifier = DeepSense(args)
     elif args.model == "SW_Transformer":
         classifier = SW_Transformer(args)
+    elif args.model == "DINOv3":
+        classifier = DINOv3(args)
     else:
         raise Exception(f"Invalid model provided: {args.model}")
 
