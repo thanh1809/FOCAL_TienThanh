@@ -135,7 +135,6 @@ dmypy.json
 /pamap2_1of10_raw/
 model/
 result/
-weights*
 .vscode/
 scripts/*.csv
 *.sh
