@@ -1,0 +1,186 @@
+# PAMAP2 subject-disjoint reduced dataset for FOCAL.
+# Generated samples are time-domain tensors with shape [channels, intervals, samples].
+# The generic Augmenter applies the FFT before the backbone.
+
+pretrain_index_file: "../data/PAMAP2_1of10/indexes/pretrain_index.txt"
+
+activity_classification:
+        num_classes: 18
+        class_names: ["lying", "sitting", "standing", "walking", "running", "cycling", "nordic_walking", "watching_tv", "computer_work", "car_driving", "ascending_stairs", "descending_stairs", "vacuum_cleaning", "ironing", "folding_laundry", "house_cleaning", "playing_soccer", "rope_jumping"]
+        train_index_file: "../data/PAMAP2_1of10/indexes/train_index.txt"
+        val_index_file: "../data/PAMAP2_1of10/indexes/val_index.txt"
+        test_index_file: "../data/PAMAP2_1of10/indexes/test_index.txt"
+
+repetition: 1
+
+# Nine overlapping intervals of 0.4 seconds inside a 2-second sample.
+num_segments: 9
+seq_len: 4
+
+# FOCAL PAMAP2 experiment: only the dominant-arm wrist IMU is used.
+num_locaiton: 1
+location_names: ["wrist"]
+loc_modalities:
+        wrist: ["acc", "gyro", "mag"]
+num_sensors: 3
+modality_names: ["acc", "gyro", "mag"]
+
+# The raw modalities have 3 axes. FFT produces real + imaginary channels.
+loc_mod_in_time_channels:
+        wrist:
+                acc: 3
+                gyro: 3
+                mag: 3
+loc_mod_in_freq_channels:
+        wrist:
+                acc: 6
+                gyro: 6
+                mag: 6
+loc_mod_spectrum_len:
+        wrist:
+                acc: 40
+                gyro: 40
+                mag: 40
+
+DeepSense:
+        dropout_ratio: 0.2
+        loc_mod_in_conv_stride: 1
+        loc_mod_conv_lens: [[1, 5], [1, 5], [1, 5]]
+        loc_mod_out_channels: 64
+        loc_mod_conv_inter_layers: 4
+        loc_conv_lens: [[1, 3], [1, 3], [1, 3]]
+        loc_out_channels: 64
+        loc_conv_inter_layers: 2
+        recurrent_dim: 64
+        recurrent_layers: 2
+        fc_dim: 128
+        pretrained_head: "linear"
+        optimizer:
+                name: "Adam"
+                start_lr: 0.001
+                warmup_lr: 0.000001
+                min_lr: 0.0000001
+                clip_grad: 5.0
+                weight_decay: 0.0001
+        lr_scheduler:
+                name: "step"
+                warmup_prefix: True
+                warmup_epochs: 0
+                train_epochs: 200
+                start_epoch: 0
+                decay_epochs: 50
+                decay_rate: 0.2
+        fixed_augmenters:
+                time_augmenters: ["no"]
+                freq_augmenters: ["no"]
+
+SW_Transformer:
+        dropout_ratio: 0.2
+        drop_path_rate: 0.1
+        attn_drop_rate: 0.2
+        in_stride:
+                acc: 1
+                gyro: 1
+                mag: 1
+        time_freq_out_channels: 32
+        time_freq_head_num: 4
+        time_freq_block_num:
+                acc: [2, 2, 2]
+                gyro: [2, 2, 2]
+                mag: [2, 2, 2]
+        mod_out_channels: 128
+        mod_head_num: 4
+        mod_block_num: 2
+        loc_out_channels: 128
+        loc_head_num: 4
+        loc_block_num: 2
+        window_size:
+                acc: [3, 5]
+                gyro: [3, 5]
+                mag: [3, 5]
+        mlp_ratio: 4.0
+        qkv_bias: True
+        APE: False
+        patch_norm: True
+        patch_size:
+                freq:
+                        acc: [1, 2]
+                        gyro: [1, 2]
+                        mag: [1, 2]
+        fc_dim: 128
+        pretrained_head: "linear"
+        optimizer:
+                name: "AdamW"
+                start_lr: 0.0001
+                warmup_lr: 0.000001
+                min_lr: 0.0000001
+                clip_grad: 5.0
+                weight_decay: 0.05
+        lr_scheduler:
+                name: "cosine"
+                warmup_prefix: True
+                warmup_epochs: 0
+                train_epochs: 500
+                start_epoch: 0
+                decay_epochs: 100
+                decay_rate: 0.2
+        fixed_augmenters:
+                time_augmenters: ["no"]
+                freq_augmenters: ["no"]
+
+FOCAL:
+        emb_dim: 128
+        temperature:
+                SW_Transformer: 0.07
+                DeepSense: 0.5
+        ranking_margin: 0.0
+        inter_rank_margin: 1
+        intra_rank_margin: 0.05
+        shared_contrastive_loss_weight: 1
+        private_contrastive_loss_weight: 1
+        orthogonal_loss_weight: 3
+        rank_loss_weight: 5
+        pretrain_optimizer:
+                name: "AdamW"
+                start_lr: 0.001
+                warmup_lr: 0.000001
+                min_lr: 0.0000001
+                clip_grad: 5.0
+                weight_decay: 0.05
+        pretrain_lr_scheduler:
+                name: "cosine"
+                warmup_prefix: True
+                warmup_epochs: 0
+                train_epochs: 1000
+                start_epoch: 0
+                decay_epochs: 100
+                decay_rate: 0.2
+        finetune_optimizer:
+                name: "Adam"
+                start_lr: 0.001
+                warmup_lr: 0.000001
+                min_lr: 0.000001
+                clip_grad: 5.0
+                weight_decay: 0.005
+                decay_rate: 0.2
+        finetune_lr_scheduler:
+                name: "step"
+                warmup_prefix: True
+                warmup_epochs: 0
+                train_epochs: 200
+                start_epoch: 0
+                decay_epochs: 50
+                decay_rate: 0.2
+        random_augmenters:
+                time_augmenters: ["scaling", "permutation", "negation"]
+                freq_augmenters: ["phase_shift"]
+
+scaling:
+        prob: 0.5
+        std: 0.1
+permutation:
+        prob: 0.5
+negation:
+        prob: 0.5
+phase_shift:
+        prob: 0.5

@@ -129,6 +129,9 @@ dmypy.json
 .pyre/
 
 # others
+/focal.pdf
+/data/PAMAP2_1of10/
+/pamap2_1of10_raw/
 model/
 result/
 weights*

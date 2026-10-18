@@ -82,6 +82,7 @@ def set_task(args):
         "MOD": "vehicle_classification",
         "RealWorld_HAR": "activity_classification",
         "PAMAP2": "activity_classification",
+        "PAMAP2_1of10": "activity_classification",
     }
 
     task = task_default_task[args.dataset] if args.task is None else args.task

@@ -37,6 +37,30 @@ MOD is a self-collected dataset using acoustic (8000Hz) and seismic (100Hz) sign
 4. Partition data
 5. Please update the index path configurations in `src/data/*.yaml`
 
+### PAMAP2 reduced subject-disjoint subset
+
+The repository now includes a PAMAP2 preprocessing script. It creates a separate
+`pamap2_1of10_raw/` folder and processed FOCAL samples under
+`data/PAMAP2_1of10/`. The default split uses subject 103 for train/validation
+and subject 109 for test. Together they are approximately 11.8% of the raw
+rows, which is the closest practical subject-disjoint subset to 10%.
+
+From the repository root, run:
+
+```bash
+python src/data_preprocess/PAMAP2/preprocess_pamap2_subset.py --overwrite
+```
+
+Then run training from `src/`:
+
+```bash
+cd src
+python train.py -dataset=PAMAP2_1of10 -model=DeepSense -learn_framework=FOCAL
+```
+
+For a smoke test, reduce `train_epochs` under `FOCAL.pretrain_lr_scheduler`
+in `src/data/PAMAP2_1of10.yaml` before training.
+
 #### Sample Extraction
 
 ##### Extract pretrain data
