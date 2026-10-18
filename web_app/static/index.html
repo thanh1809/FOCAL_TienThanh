@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FOCAL - Nhận diện hành vi đa cảm biến</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header tối giản không nút/chế độ -->
+        <header class="app-header">
+            <h1>FOCAL - Nhận diện hành vi đa cảm biến</h1>
+        </header>
+
+        <!-- Bố cục 3 phần chính kéo dài toàn màn hình (full height) -->
+        <main class="grid-layout">
+            
+            <!-- Phần 1: Dữ liệu đầu vào -->
+            <section class="panel">
+                <div class="panel-header">
+                    <h2>1. Dữ liệu đầu vào</h2>
+                </div>
+                <div class="panel-body">
+                    <input type="file" id="file-input" accept=".pt,.csv" style="display: none;" />
+                    
+                    <div class="upload-area" id="upload-area">
+                        <div class="upload-title">Tải file dữ liệu (.pt)</div>
+                        <div class="upload-sub">Nhấn để chọn file từ máy tính</div>
+                    </div>
+
+                    <div class="selected-file-info">
+                        <div class="info-row">
+                            <span class="info-label">File đang nạp:</span>
+                            <span class="info-val" id="active-filename">subject103_Protocol_000730.pt</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Nguồn dữ liệu:</span>
+                            <span class="info-val" id="active-source-desc">Dữ liệu cảm biến cổ tay (Wrist IMU)</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Phần 2: Nghiệp vụ AI xử lý -->
+            <section class="panel">
+                <div class="panel-header flex-between">
+                    <h2>2. Tiến trình xử lý AI</h2>
+                    <button id="btn-run" class="btn-primary">Chạy nhận diện</button>
+                </div>
+                <div class="panel-body flex-col-between">
+                    
+                    <div class="steps-container" id="steps-container">
+                        <div class="step-item" id="stage-1">
+                            <div class="step-num">1</div>
+                            <div class="step-title">Giai đoạn 1: Tiếp nhận và phân đoạn tín hiệu</div>
+                        </div>
+
+                        <div class="step-item" id="stage-2">
+                            <div class="step-num">2</div>
+                            <div class="step-title">Giai đoạn 2: Chuyển đổi Thời gian - Tần số (STFT Spectrogram)</div>
+                        </div>
+
+                        <div class="step-item" id="stage-3">
+                            <div class="step-num">3</div>
+                            <div class="step-title">Giai đoạn 3: Trích xuất đặc trưng đa cảm biến</div>
+                        </div>
+
+                        <div class="step-item" id="stage-4">
+                            <div class="step-num">4</div>
+                            <div class="step-title">Giai đoạn 4: Hòa trộn đặc trưng (Multimodal Fusion)</div>
+                        </div>
+
+                        <div class="step-item" id="stage-5">
+                            <div class="step-num">5</div>
+                            <div class="step-title">Giai đoạn 5: Phân loại hành vi & Xuất kết quả</div>
+                        </div>
+                    </div>
+
+                    <div class="current-stage-bar">
+                        <div class="stage-status-text" id="stage-status-text">Trạng thái: Sẵn sàng xử lý</div>
+                        <div class="stage-progress-track">
+                            <div class="stage-progress-fill" id="stage-progress-fill"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Phần 3: Kết quả -->
+            <section class="panel">
+                <div class="panel-header">
+                    <h2>3. Kết quả</h2>
+                </div>
+                <div class="panel-body">
+                    
+                    <div class="result-box">
+                        <div class="result-title">HÀNH VI NHẬN DIỆN:</div>
+                        <div class="result-name" id="res-name">Đi bộ (walking)</div>
+                        <div class="result-conf-row">
+                            <span>Độ tin cậy:</span>
+                            <strong id="res-conf">87.8%</strong>
+                        </div>
+                    </div>
+
+                    <div class="probabilities-section">
+                        <div class="sub-heading">Xác suất các hành vi khác:</div>
+                        <div class="prob-table" id="prob-table">
+                            <!-- JS điền -->
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

@@ -130,6 +130,7 @@ dmypy.json
 
 # others
 /focal.pdf
+/Hành động/
 /data/PAMAP2_1of10/
 /pamap2_1of10_raw/
 model/
@@ -138,3 +139,5 @@ weights*
 .vscode/
 scripts/*.csv
 *.sh
+*.dat
+pamap2*

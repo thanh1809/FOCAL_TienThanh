@@ -1,0 +1,375 @@
+/* ==========================================================================
+   FOCAL Web UI - Full-Height Clean & Minimalist Style
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #111113;
+    color: #e5e5e7;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 16px 24px;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #222226;
+    flex-shrink: 0;
+}
+
+.app-header h1 {
+    font-size: 17px;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: -0.2px;
+}
+
+/* Grid Layout 3 Cột Kéo Hết Xuống Đáy Màn Hình */
+.grid-layout {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1.35fr 1.15fr;
+    gap: 16px;
+    height: calc(100% - 50px);
+}
+
+@media (max-width: 900px) {
+    body {
+        height: auto;
+        overflow: auto;
+    }
+    .grid-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+}
+
+/* Panel kéo hết chiều cao */
+.panel {
+    background: #17171a;
+    border: 1px solid #26262a;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.panel-header {
+    padding: 12px 18px;
+    background: #1b1b1f;
+    border-bottom: 1px solid #26262a;
+    flex-shrink: 0;
+}
+
+.panel-header.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.panel-header h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #f0f0f0;
+}
+
+.panel-body {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.flex-col-between {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Buttons */
+.btn-primary {
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.btn-primary:hover {
+    background: #dcdcdc;
+}
+
+/* ==========================================================================
+   Phần 1: Dữ liệu đầu vào (Full Height)
+   ========================================================================== */
+.upload-area {
+    border: 1.5px dashed #3a3a42;
+    background: #131315;
+    border-radius: 6px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+    transition: all 0.2s ease;
+}
+.upload-area:hover {
+    border-color: #666670;
+    background: #161619;
+}
+
+.upload-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 6px;
+}
+
+.upload-sub {
+    font-size: 12px;
+    color: #777777;
+}
+
+.selected-file-info {
+    background: #131315;
+    border: 1px solid #26262a;
+    border-radius: 4px;
+    padding: 14px;
+    flex-shrink: 0;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+.info-row:last-child {
+    margin-bottom: 0;
+}
+
+.info-label {
+    color: #888888;
+}
+
+.info-val {
+    color: #dddddd;
+    font-weight: 500;
+    text-align: right;
+    max-width: 65%;
+    word-break: break-all;
+}
+
+/* ==========================================================================
+   Phần 2: Tiến trình xử lý AI (Full Height Spaced)
+   ========================================================================== */
+.steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    margin-bottom: 16px;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #131315;
+    border: 1px solid #222226;
+    border-radius: 4px;
+    color: #555559;
+    flex: 1;
+    transition: all 0.2s ease;
+}
+
+.step-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #1f1f23;
+    border: 1px solid #333338;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+    color: #777777;
+}
+
+.step-title {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* Sáng rõ chữ khi đến giai đoạn */
+.step-item.active {
+    background: #1e1e24;
+    border-color: #666675;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.06);
+}
+.step-item.active .step-num {
+    background: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+}
+.step-item.active .step-title {
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.step-item.completed {
+    color: #999999;
+    border-color: #28282c;
+    background: #151518;
+}
+.step-item.completed .step-num {
+    background: #242429;
+    color: #aaaaaa;
+}
+
+.current-stage-bar {
+    background: #131315;
+    border: 1px solid #26262a;
+    border-radius: 4px;
+    padding: 12px;
+    flex-shrink: 0;
+}
+
+.stage-status-text {
+    font-size: 12px;
+    color: #888888;
+    margin-bottom: 8px;
+}
+
+.stage-progress-track {
+    width: 100%;
+    height: 4px;
+    background: #222226;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.stage-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #ffffff;
+    transition: width 0.3s ease;
+}
+
+/* ==========================================================================
+   Phần 3: Kết quả (Full Height)
+   ========================================================================== */
+.result-box {
+    background: #131315;
+    border: 1px solid #2a2a30;
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+}
+
+.result-title {
+    font-size: 11px;
+    color: #777777;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.result-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.result-conf-row {
+    font-size: 13px;
+    color: #aaaaaa;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+.result-conf-row strong {
+    font-size: 18px;
+    color: #ffffff;
+}
+
+.probabilities-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.sub-heading {
+    font-size: 12px;
+    color: #777777;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+}
+
+.prob-table {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.prob-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: #131315;
+    border: 1px solid #222226;
+    border-radius: 4px;
+    font-size: 13px;
+    flex: 1;
+}
+
+.prob-name {
+    color: #cccccc;
+}
+
+.prob-pct {
+    color: #888888;
+    font-family: monospace;
+}

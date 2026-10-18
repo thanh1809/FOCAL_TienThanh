@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: focal-har-sensing
+    env: python
+    buildCommand: "pip install -r requirements-render.txt"
+    startCommand: "python run_ui.py"
+    plan: free
+    envVars:
+      - key: PORT
+        value: 10000
