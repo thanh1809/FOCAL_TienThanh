@@ -41,11 +41,12 @@ class FOCALInferenceEngine:
     def __init__(self, config_path="src/data/PAMAP2_1of10.yaml", weights_dir="weights"):
         self.config_path = config_path
         self.weights_dir = weights_dir
+        self.default_weight_filename = "PAMAP2_1of10_DeepSense_finetune_best.pt"
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.config = self._load_config()
         self.model = None
         self.active_weight_file = None
-        self.model_type = "SW_Transformer" # Default backbone
+        self.model_type = "DeepSense" # PAMAP2 trained backbone
         self.is_real_model = False
         
         # Try to load real weights if available
@@ -67,7 +68,7 @@ class FOCALInferenceEngine:
         files = glob.glob(os.path.join(self.weights_dir, "*.pt"))
         return [os.path.basename(f) for f in files]
 
-    def _create_args_obj(self, model_name="SW_Transformer"):
+    def _create_args_obj(self, model_name="DeepSense"):
         class Args:
             pass
         args = Args()
@@ -88,6 +89,8 @@ class FOCALInferenceEngine:
 
         if weight_filename and os.path.exists(os.path.join(self.weights_dir, weight_filename)):
             target_weight = os.path.join(self.weights_dir, weight_filename)
+        elif self.default_weight_filename in weights:
+            target_weight = os.path.join(self.weights_dir, self.default_weight_filename)
         elif "best_model.pt" in weights:
             target_weight = os.path.join(self.weights_dir, "best_model.pt")
         elif len(weights) > 0:
